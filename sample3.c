@@ -5,15 +5,18 @@ static GLfloat ang = 0.0;
 
 void display(void)
 {  
-int i=0, x = 20;
+int i=0, r = 20;
+double rad,x,y;
   glClear(GL_COLOR_BUFFER_BIT);
-  glColor3f(1.0, 1.0, 1.0);
+  glColor3f(1.0, 1.0, 0.0);
   glPushMatrix();
   	glRotatef(ang, 0.0, 0.0, 1.0); /*横*/
   glBegin(GL_LINE_LOOP);
 	for(i = 0;i < 360; i++){
-		double rad = i/180.0*3.141592;
-		glVertex2d(x*cos(rad), x*sin(rad));
+	 rad = i/180.0*3.141592;
+		glVertex2d(r*cos(rad), r*sin(rad));
+		glVertex2d(-r*cos(rad), r*sin(rad));
+		glVertex2d(-r*cos(rad), -r*sin(rad));
 	}
   glEnd();
   glFlush();
