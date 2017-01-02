@@ -1,85 +1,104 @@
 #include<stdlib.h>
 #include<math.h>
-#include <GL/glut.h>
-static GLfloat ang = 0.0;
+#include<GL/glut.h>
+static GLfloat w=0;
+double rad,x=0,y=0,a=0.08,b=0.06;
+int top=100,bottom=-100,left=-100,right=100;
 
 void display(void)
-{  
-int i=0, r = 20;
-double rad,x,y;
-  glClear(GL_COLOR_BUFFER_BIT);
-  glColor3f(1.0, 1.0, 0.0);
-  glPushMatrix();
-  	glRotatef(ang, 0.0, 0.0, 1.0); /*横*/
-  glBegin(GL_LINE_LOOP);
-	for(i = 0;i < 360; i++){
-	 rad = i/180.0*3.141592;
-		glVertex2d(r*cos(rad), r*sin(rad));
-		glVertex2d(-r*cos(rad), r*sin(rad));
-		glVertex2d(-r*cos(rad), -r*sin(rad));
-	}
-  glEnd();
-  glFlush();
-  glPopMatrix();
-  glutSwapBuffers();  
+{
+int i=0, r1 = 5, r2 = 3;
+glClear(GL_COLOR_BUFFER_BIT);
+glColor3f(1.0, 1.0, 0.0);
+glPushMatrix();
+glRotatef(w, 0.0, 0.0, 0.0);
+glTranslatef( x, y, 0);
+glBegin(GL_TRIANGLE_STRIP);
+	glVertex2d(r1, r1);
+	glVertex2d(r1, -r1);
+	glVertex2d(-r1, r1);
+	glVertex2d(-r1, -r1);
+glEnd();
+glFlush();
+glPopMatrix();
+
+glPushMatrix();
+glColor3f(0.0, 1.0, 1.0);
+glRotatef(w, 0.0, 0.0, 0.0);
+glTranslatef( -x, -y, 0);
+glBegin(GL_TRIANGLE_STRIP);
+	glVertex2d(r2, r2);
+	glVertex2d(r2, -r2);
+	glVertex2d(-r2, r2);
+	glVertex2d(-r2, -r2);
+glEnd();
+glFlush();
+glPopMatrix();
+glutSwapBuffers();
 }
 
 void simu(void)
 {
-  ang = ang + 1.0; /*回転速度*/
-  if ( ang > 360.0 )
-  	ang = ang - 360.0;
-  glutPostRedisplay();
+w += 0.05;
+	if ( w == 360 )
+	w=0;
+x += a;
+y += b;
+	if ( x > right/2 || x < left/2)
+	a *=(-1);
+	if ( y > top/2 || y < bottom/2)
+	b *=(-1);
+glutPostRedisplay();
 }
 
 void init(void)
 {
-  glClearColor(0.0, 0.0, 0.0, 0.0);
-  glShadeModel(GL_FLAT);
+glClearColor(0.0, 0.0, 0.0, 0.0);
+glShadeModel(GL_FLAT);
 }
 
 void reshape(int w, int h)
 {
-  glViewport( 0, 0, w, h );
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glOrtho(-50.0, 50.0, -50.0, 50.0, -1.0, 1.0);
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
+glViewport( 0, 0, w, h );
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+glOrtho( left, right, bottom, top, -1.0, 1.0);
+glMatrixMode(GL_MODELVIEW);
+glLoadIdentity();
 }
 
 void mouse(int button, int state, int x, int y){
-  switch (button) {
-     case GLUT_LEFT_BUTTON:
-     	if ( state == GLUT_DOWN)
-     		glutIdleFunc(simu);
-     	break;
-     case GLUT_RIGHT_BUTTON:
+switch (button) {
+	case GLUT_LEFT_BUTTON:
 		if ( state == GLUT_DOWN)
-     		glutIdleFunc(NULL);
-     	break; 
-     default:
-     	break; 
-  }
+		glutIdleFunc(simu);
+	break;
+	case GLUT_RIGHT_BUTTON:
+		if ( state == GLUT_DOWN)
+			glutIdleFunc(NULL);
+	break;
+	default:
+		break;
+	}
 }
 
 void keyboard(unsigned char key, int x, int y)
 {
-  if ( key == '\x1b') exit(0);
+if ( key == '\x1b') exit(0);
 }
 
 int main(int argc, char *argv[])
 {
-  glutInit(&argc, argv);
-  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-  glutInitWindowSize (400, 400);
-  glutInitWindowPosition(100,100);
-  glutCreateWindow(argv[0]);
-  init();
-  glutReshapeFunc(reshape);
-  glutKeyboardFunc(keyboard);
-  glutMouseFunc(mouse);
-  glutDisplayFunc(display);
-    glutMainLoop();
-  return 0;
-} 
+glutInit(&argc, argv);
+glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+glutInitWindowSize (400, 400);
+glutInitWindowPosition(100,100);
+glutCreateWindow(argv[0]);
+init();
+glutReshapeFunc(reshape);
+glutKeyboardFunc(keyboard);
+glutMouseFunc(mouse);
+glutDisplayFunc(display);
+	glutMainLoop();
+return 0;
+}
