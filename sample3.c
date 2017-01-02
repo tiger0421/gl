@@ -1,23 +1,26 @@
 #include<stdlib.h>
 #include<math.h>
 #include<GL/glut.h>
+#define PI 3.14159265258979
 static GLfloat w=0;
 double rad,x=0,y=0,a=0.08,b=0.06;
 int top=100,bottom=-100,left=-100,right=100;
 
 void display(void)
 {
-int i=0, r1 = 5, r2 = 3;
+int i1=0, i2=0, r1 = 5, r2 = 3;
 glClear(GL_COLOR_BUFFER_BIT);
 glColor3f(1.0, 1.0, 0.0);
 glPushMatrix();
 glRotatef(w, 0.0, 0.0, 0.0);
 glTranslatef( x, y, 0);
 glBegin(GL_TRIANGLE_STRIP);
-	glVertex2d(r1, r1);
-	glVertex2d(r1, -r1);
-	glVertex2d(-r1, r1);
-	glVertex2d(-r1, -r1);
+for(i1=0;i1<360;i1+=10){
+	i2 = i1 + 10;
+	glVertex2d(0, 0);
+	glVertex2d(r1*cos(i1*PI/180),r1*sin(i1*PI/180));
+	glVertex2d(r1*cos(i2*PI/180),r1*sin(i2*PI/180));
+}
 glEnd();
 glFlush();
 glPopMatrix();
@@ -27,10 +30,12 @@ glColor3f(0.0, 1.0, 1.0);
 glRotatef(w, 0.0, 0.0, 0.0);
 glTranslatef( -x, -y, 0);
 glBegin(GL_TRIANGLE_STRIP);
-	glVertex2d(r2, r2);
-	glVertex2d(r2, -r2);
-	glVertex2d(-r2, r2);
-	glVertex2d(-r2, -r2);
+for(i1=0;i1<360;i1+=10){
+	i2 = i1 + 10;
+	glVertex2d(0, 0);
+	glVertex2d(r2*cos(i1*PI/180),r2*sin(i1*PI/180));
+	glVertex2d(r2*cos(i2*PI/180),r2*sin(i2*PI/180));
+}
 glEnd();
 glFlush();
 glPopMatrix();
