@@ -7,9 +7,14 @@
 #define e 0.9
 static GLfloat w=0;
 double vx=-2,vx2=0,vy=0,vy2=0,sub=0,sub2=0;
-int top=200,bottom=-200,left=-200,right=200,r=3;
+int top=200,bottom=-200,left=-200,right=200,r=5;
 double x=200,x2=0,y=70,y2=-20,m=3,m2=6;
 double i1=0, i2=0,i3=180;
+
+struct data{
+double m;
+double r;
+};
 
 void display(void)
 {
@@ -17,6 +22,11 @@ glClear(GL_COLOR_BUFFER_BIT);
 int r2=12,r3=95;
 double a=0,b=0,c=0;
 double distance,disx,disy;
+
+struct data obj[2]={
+	{3,5},
+	{6,12}
+};
 
 glPushMatrix();//ground
 glColor3f(1.0, 1.0, 1.0);
@@ -69,17 +79,6 @@ glFlush();
 glPopMatrix();
 glutSwapBuffers();
 
-if(fabs(x2) >= fabs(x) && fabs(y2) >= fabs(y)){
-
-	a=y2-y;
-	b=x-x2;
-	c=(y-y2)*x+(x2-x)*y;
-	distance=fabs(a*x2+c)/sqrt(a*a+b*b);
-	if(distance <=0.869){
-		vx*=-1;
-		vy*=-1;
-	}
-}
 disx=pow((x-x2),2);
 disy=pow((y-y2),2);
 distance=sqrt((disx+disy));
