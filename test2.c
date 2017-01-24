@@ -6,27 +6,29 @@
 #define G 0.098
 #define e 0.9
 static GLfloat w=0;
-double vx=-2,vx2=0,vy=0,vy2=0,sub=0,sub2=0;
+double leg_deg=0,rotate=1;
 int top=200,bottom=-200,left=-200,right=200,r=5;
-double x=200,x2=0,y=70,y2=-20,m=3,m2=6;
+double x=100,x2=0,y=70,y2=0,m=3,m2=6;
 double i1=0, i2=0,i3=180;
 
 struct data{
 double m;
 double r;
+double vx;
+double vy;
+};
+struct data obj[2]={
+	{3,10,-2,0},
+	{6,18,0,0}
 };
 
 void display(void)
 {
 glClear(GL_COLOR_BUFFER_BIT);
-int r2=12,r3=95;
+int r3=95;
 double a=0,b=0,c=0;
 double distance,disx,disy;
 
-struct data obj[2]={
-	{3,5},
-	{6,12}
-};
 
 glPushMatrix();//ground
 glColor3f(1.0, 1.0, 1.0);
@@ -45,11 +47,11 @@ glPushMatrix();//ball
 glColor3f(1.0, 1.0, 0.0);
 glRotatef(w, 0.0, 0.0, 0.0);
 glBegin(GL_TRIANGLE_STRIP);
-for(i1=0;i1<360;i1+=10){
+for(i1=20;i1<340;i1+=10){
 	i2 = i1 + 10;
 	glVertex2d(x, y);
-	glVertex2d(x+r*cos(i1*PI/180),y+r*sin(i1*PI/180));
-	glVertex2d(x+r*cos(i2*PI/180),y+r*sin(i2*PI/180));
+	glVertex2d(x+obj[0].r*cos((i1+w)*PI/180),y+obj[0].r*sin((i1+w)*PI/180));
+	glVertex2d(x+obj[0].r*cos((i2+w)*PI/180),y+obj[0].r*sin((i2+w)*PI/180));
 }
 glEnd();
 glFlush();
@@ -71,8 +73,8 @@ x2=r3*cos(i3*PI/180)-r3;
 y2=r3*sin(i3*PI/180);
 for(i1=0, i2=10;i2<=360;i1+=10, i2+=10){
 glVertex2d(x2,y2);
-glVertex2d(x2+r2*cos(i1*PI/180),y2+r2*sin(i1*PI/180));
-glVertex2d(x2+r2*cos(i2*PI/180),y2+r2*sin(i2*PI/180));
+glVertex2d(x2+obj[1].r*cos(i1*PI/180),y2+obj[1].r*sin(i1*PI/180));
+glVertex2d(x2+obj[1].r*cos(i2*PI/180),y2+obj[1].r*sin(i2*PI/180));
 }
 glEnd();
 glFlush();
@@ -82,49 +84,54 @@ glutSwapBuffers();
 disx=pow((x-x2),2);
 disy=pow((y-y2),2);
 distance=sqrt((disx+disy));
-if((r + r2) >= distance){//foot-collision or
-if(vx>0)//adjust
-	x-=r+r2-distance;
-else if(vx<0)
-	x+=r+r2-distance;
-else if(vy>0)
-	y-=r+r2-distance;
-else if(vy<0)
-	y+=r+r2-distance;
+if((r + obj[1].r) >= distance){//foot-collision or
+if(obj[0].vx>0)//adjust
+	x-=r+obj[1].r-distance;
+else if(obj[0].vx<0)
+	x+=r+obj[1].r-distance;
+else if(obj[0].vy>0)
+	y-=r+obj[1].r-distance;
+else if(obj[0].vy<0)
+	y+=r+obj[1].r-distance;
+/*
+vx+=sin(i3*PI/180);
+vy+=cos(i3*PI/180);*/
+obj[0].vx*=-1;
 
-vx*=-1;
-vy*=-1;
+rotate*=-1;
 	}
 }
 
 void simu(void)
 {
-w += 0.05;
+w += 5*rotate;
 if ( w == 360 )
 	w=0;
 
 if(i3 == 180)
-sub=1.0;
+leg_deg=1.0;
 if(i3 >= 360)
-sub=-1.0;
+leg_deg=-1.0;
 
-i3+=sub;
+i3+=leg_deg;
 
-vy-=G;
-x += vx;
-y += vy;
+obj[0].vy-=G;
+x += obj[0].vx;
+y += obj[0].vy;
 
-if ( x-r < left ){
-	vx *=(-1)*e;
-	x+=left-(x-r);
+if ( x-obj[0].r < left ){
+	obj[0].vx *=(-1)*e;
+	x+=left-(x-obj[0].r);
+	rotate=-1;
 }
-if( x+r >right ){
-	vx *=(-1)*e;
-	x+=right-(x+r);
+if( x+obj[0].r >right ){
+	obj[0].vx *=(-1)*e;
+	x+=right-(x+obj[0].r);
+	rotate=1;
 }
-if( y-r-G < bottom + 10 ){
-	vy *=(-1)*e;
-	y+=bottom - (y-r-G) + 10;
+if( y-obj[0].r-G < bottom + 10 ){
+	obj[0].vy *=(-1)*e;
+	y+=bottom - (y-obj[0].r - G) + 10;
 }
 glutPostRedisplay();
 }
