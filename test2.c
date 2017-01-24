@@ -6,15 +6,15 @@
 #define G 0.098
 #define e 0.9
 static GLfloat w=0;
-double vx=0,vx2=0,vy=0,vy2=0,sub=0,sub2=0;
+double vx=-2,vx2=0,vy=0,vy2=0,sub=0,sub2=0;
 int top=200,bottom=-200,left=-200,right=200,r=3;
-double x=-10,x2=0,y=70,y2=-20,m=3,m2=6;
+double x=200,x2=0,y=70,y2=-20,m=3,m2=6;
 double i1=0, i2=0,i3=180;
 
 void display(void)
 {
 glClear(GL_COLOR_BUFFER_BIT);
-int r2=12,r3=90;
+int r2=12,r3=95;
 double a=0,b=0,c=0;
 double distance,disx,disy;
 
@@ -69,17 +69,17 @@ glFlush();
 glPopMatrix();
 glutSwapBuffers();
 
-a=y2-y;
-//b=x-x2;
-c=(y-y2)*x+(x2-x)*y;
-distance=fabs(a*(x2+r3)+c)/sqrt(a*a+b*b);
-if(r>=distance){
+if(fabs(x2) >= fabs(x) && fabs(y2) >= fabs(y)){
 
-
-
-
+	a=y2-y;
+	b=x-x2;
+	c=(y-y2)*x+(x2-x)*y;
+	distance=fabs(a*x2+c)/sqrt(a*a+b*b);
+	if(distance <=0.869){
+		vx*=-1;
+		vy*=-1;
+	}
 }
-
 disx=pow((x-x2),2);
 disy=pow((y-y2),2);
 distance=sqrt((disx+disy));
@@ -93,10 +93,8 @@ else if(vy>0)
 else if(vy<0)
 	y+=r+r2-distance;
 
-vx2=r2*PI/180*cos(i3*PI/180);//restitution
-vy2=r2*PI/180*sin(i3*PI/180);
-vx=i3/10*m2/m*vx2;
-vy=i3/10*m2/m*vy2;
+vx*=-1;
+vy*=-1;
 	}
 }
 
